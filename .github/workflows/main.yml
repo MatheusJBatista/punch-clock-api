@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: yarn install
+        run: yarn install
+
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["public/config.js"]'
+          tokenPrefix: '__{'
+          tokenSuffix: '}__'
+        env:
+          mongoConnection: ${{ secrets.MONGO_URL }}
+          mongoDatabase: ${{ secrets.MONGO_DATABASE }}
+
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: 'api-punch-clock'
+          heroku_email: 'matheus_roberto_batista@hotmail.com'
