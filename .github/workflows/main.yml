@@ -16,7 +16,7 @@ jobs:
 
       - uses: cschleiden/replace-tokens@v1
         with:
-          files: '["public/config.js"]'
+          files: '["src/environment/production-config.js"]'
           tokenPrefix: '__{'
           tokenSuffix: '}__'
         env:
