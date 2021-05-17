@@ -1,4 +1,4 @@
-import { DateTime, Info } from 'luxon'
+import { Duration, Info } from 'luxon'
 
 const weekDays = Info.weekdays('short', { locale: 'pt-br' })
 const saturday = 5
@@ -27,21 +27,23 @@ const getAllDayFromAMonthInAYear = (year, month) => {
 }
 
 const getTotalTimeFromDay = (enterTime, leaveToLunchTime, backFromLunchTime, exitTime) => {
-  const enterTimeDate = DateTime.fromISO(enterTime)
-  const leaveToLunchTimeDate = DateTime.fromISO(leaveToLunchTime)
-  const backFromLunchTimeDate = DateTime.fromISO(backFromLunchTime)
-  const exitTimeDate = DateTime.fromISO(exitTime)
+  const enterTimeDuration = Duration.fromISOTime(enterTime)
+  const leaveToLunchTimeDuration = Duration.fromISOTime(leaveToLunchTime)
+  const backFromLunchTimeDuration = Duration.fromISOTime(backFromLunchTime)
+  const exitTimeDuration = Duration.fromISOTime(exitTime)
 
-  const totalHourOfLunch = backFromLunchTimeDate.diff(leaveToLunchTimeDate, ['hours', 'minutes'])
-  const totalTimeOfWorkWithoutLunch = exitTimeDate.diff(enterTimeDate, ['hours', 'minutes'])
+  const totalTimeOfLunch = backFromLunchTimeDuration.minus(leaveToLunchTimeDuration)
+  const totalTimeOfWorkWithoutLunch = exitTimeDuration.minus(enterTimeDuration)
 
-  const hours = (totalTimeOfWorkWithoutLunch.values.hours - totalHourOfLunch.values.hours).toFixed(0)
-  const minutes = (totalTimeOfWorkWithoutLunch.values.minutes - totalHourOfLunch.values.minutes).toFixed(0)
+  const totalTimeOfWork = totalTimeOfWorkWithoutLunch.minus(totalTimeOfLunch)
 
-  const hoursAsString = hours <= 9 ? `0${hours}` : hours
-  const minutesAsString = minutes <= 9 ? `0${minutes}` : minutes
+  const hours = totalTimeOfWork.values.hours
+  const minutes = totalTimeOfWork.values.minutes
 
-  return `${hoursAsString}:${minutesAsString}`
+  const hoursInString = hours > 0 && hours <= 9 ? `0${hours}` : hours
+  const minutesInString = minutes > 0 && minutes <= 9 ? `0${minutes}` : minutes
+
+  return `${hoursInString}:${minutesInString}`
 }
 
 export { getAllDayFromAMonthInAYear, getTotalTimeFromDay }
