@@ -41,8 +41,6 @@ const getTotalTimeFromDay = (enterTime, leaveToLunchTime, backFromLunchTime, exi
   const hoursAsString = hours <= 9 ? `0${hours}` : hours
   const minutesAsString = minutes <= 9 ? `0${minutes}` : minutes
 
-  console.log(`${hoursAsString}:${minutesAsString}`)
-
   return `${hoursAsString}:${minutesAsString}`
 }
 

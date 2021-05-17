@@ -3,7 +3,7 @@ import ModelBase from './model-base'
 import ExtraDate from './schema/extra-date'
 
 const Time = ModelBase({
-  userId: { type: 'string', ref: 'User' },
+  userId: 'string',
   date: Date,
   weekday: 'string',
   isWeekend: Boolean,
