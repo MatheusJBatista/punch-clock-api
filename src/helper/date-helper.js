@@ -1,4 +1,4 @@
-import { Duration, Info } from 'luxon'
+import { Duration, DateTime, Info } from 'luxon'
 
 const weekDays = Info.weekdays('short', { locale: 'pt-br' })
 const saturday = 5
