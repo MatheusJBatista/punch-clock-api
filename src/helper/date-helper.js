@@ -1,4 +1,4 @@
-import { Duration, DateTime, Info } from 'luxon'
+import { DateTime, Info } from 'luxon'
 
 const weekDays = Info.weekdays('short', { locale: 'pt-br' })
 const saturday = 5
@@ -27,21 +27,21 @@ const getAllDayFromAMonthInAYear = (year, month) => {
 }
 
 const getTotalTimeFromDay = (enterTime, leaveToLunchTime, backFromLunchTime, exitTime) => {
-  const enterTimeDuration = Duration.fromISOTime(enterTime)
-  const leaveToLunchTimeDuration = Duration.fromISOTime(leaveToLunchTime)
-  const backFromLunchTimeDuration = Duration.fromISOTime(backFromLunchTime)
-  const exitTimeDuration = Duration.fromISOTime(exitTime)
+  const enterTimeDate = DateTime.fromISO(enterTime)
+  const leaveToLunchTimeDate = DateTime.fromISO(leaveToLunchTime)
+  const backFromLunchTimeDate = DateTime.fromISO(backFromLunchTime)
+  const exitTimeDate = DateTime.fromISO(exitTime)
 
-  const totalTimeOfLunch = backFromLunchTimeDuration.minus(leaveToLunchTimeDuration)
-  const totalTimeOfWorkWithoutLunch = exitTimeDuration.minus(enterTimeDuration)
+  const totalTimeOfLunch = backFromLunchTimeDate.diff(leaveToLunchTimeDate, ['hours', 'minutes'])
+  const totalTimeOfWorkWithoutLunch = exitTimeDate.diff(enterTimeDate, ['hours', 'minutes'])
 
   const totalTimeOfWork = totalTimeOfWorkWithoutLunch.minus(totalTimeOfLunch)
 
   const hours = totalTimeOfWork.values.hours
   const minutes = totalTimeOfWork.values.minutes
 
-  const hoursInString = hours > 0 && hours <= 9 ? `0${hours}` : hours
-  const minutesInString = minutes > 0 && minutes <= 9 ? `0${minutes}` : minutes
+  const hoursInString = hours <= 9 ? `0${hours}` : hours
+  const minutesInString = minutes <= 9 ? `0${minutes}` : minutes
 
   return `${hoursInString}:${minutesInString}`
 }
