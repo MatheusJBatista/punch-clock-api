@@ -1,6 +1,7 @@
 import BusinessException from '../helper/business-exception'
 import Time from '../model/time'
-import { getAllDayFromAMonthInAYear, getTotalTimeFromDay } from '../helper/date-helper'
+import { getAllDayFromAMonthInAYear, getStringMonth, getStringYear, getTotalTimeFromDay } from '../helper/date-helper'
+import { DateTime } from 'luxon'
 
 const createMonth = async (payload, user) => {
   const { year, month } = payload
@@ -50,13 +51,15 @@ const getDateFilter = (year, month, userId) => {
   if (!year) throw new BusinessException('Deve passar o ano.')
   if (!month) throw new BusinessException('Deve passar o mês.')
 
-  const nextMonth = parseInt(month) + 1
-  const nextMonthAsString = `0${nextMonth}`
+  const monthFormatted = getStringMonth(month)
+  const yearFormatted = getStringYear(year)
+
+  const date = DateTime.fromISO(`${yearFormatted}-${monthFormatted}-01T03:00Z`)
 
   const filter = {
     date: {
-      $gte: new Date(`${year}-${month}-01T03:00Z`),
-      $lt: new Date(`${year}-${nextMonthAsString}-01T03:00Z`),
+      $gte: date.toJSDate(),
+      $lt: date.plus({ month: 1 }).toJSDate(),
     },
   }
 

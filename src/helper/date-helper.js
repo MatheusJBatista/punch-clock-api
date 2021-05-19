@@ -46,4 +46,20 @@ const getTotalTimeFromDay = (enterTime, leaveToLunchTime, backFromLunchTime, exi
   return `${hoursInString}:${minutesInString}`
 }
 
-export { getAllDayFromAMonthInAYear, getTotalTimeFromDay }
+const getStringMonth = month => {
+  month = month.toString()
+  while (month.length !== 2) {
+    month = `0${month}`
+  }
+  return month
+}
+
+const getStringYear = year => {
+  year = year.toString()
+  while (year.length !== 4) {
+    year = `0${year}`
+  }
+  return year
+}
+
+export { getAllDayFromAMonthInAYear, getTotalTimeFromDay, getStringMonth, getStringYear }
