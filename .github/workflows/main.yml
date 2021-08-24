@@ -19,9 +19,6 @@ jobs:
       - name: yarn install
         run: yarn install
 
-      - name: log
-        run: echo '${{ steps.step_id.outputs.url_output }}'
-
       - uses: cschleiden/replace-tokens@v1
         with:
           files: '["src/environment/production-config.js"]'
@@ -43,15 +40,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: staging
     environment:
-        name: HML
+        name: PRD
     steps:
       - uses: actions/checkout@v2
 
       - name: yarn install
         run: yarn install
-
-      - name: log
-        run: echo '${{ steps.step_id.outputs.url_output }}'
 
       - uses: cschleiden/replace-tokens@v1
         with:
