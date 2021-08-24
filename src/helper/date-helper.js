@@ -1,4 +1,5 @@
 import { DateTime, Info } from 'luxon'
+import BusinessException from './business-exception'
 
 const weekDays = Info.weekdays('short', { locale: 'pt-br' })
 const saturday = 5
@@ -31,11 +32,12 @@ const getTotalTimeFromDay = (enterTime, leaveToLunchTime, backFromLunchTime, exi
   const leaveToLunchTimeDate = DateTime.fromISO(leaveToLunchTime)
   const backFromLunchTimeDate = DateTime.fromISO(backFromLunchTime)
   const exitTimeDate = DateTime.fromISO(exitTime)
+  validateAllTimeFromDay(enterTimeDate, leaveToLunchTimeDate, backFromLunchTimeDate, exitTimeDate)
 
   const totalTimeOfLunch = backFromLunchTimeDate.diff(leaveToLunchTimeDate, ['hours', 'minutes'])
   const totalTimeOfWorkWithoutLunch = exitTimeDate.diff(enterTimeDate, ['hours', 'minutes'])
 
-  const totalTimeOfWork = totalTimeOfWorkWithoutLunch.minus(totalTimeOfLunch)
+  const totalTimeOfWork = totalTimeOfWorkWithoutLunch.minus(totalTimeOfLunch).shiftTo('hours', 'minutes')
 
   const hours = totalTimeOfWork.values.hours
   const minutes = totalTimeOfWork.values.minutes
@@ -62,4 +64,18 @@ const getStringYear = year => {
   return year
 }
 
-export { getAllDayFromAMonthInAYear, getTotalTimeFromDay, getStringMonth, getStringYear }
+const validateAllTimeFromDay = (enterTimeDate, leaveToLunchTimeDate, backFromLunchTimeDate, exitTimeDate) => {
+  if (!enterTimeDate.isValid) throw new BusinessException('Horário de entrada inválida')
+  if (!leaveToLunchTimeDate.isValid) throw new BusinessException('Horário da ida do almoço inválida')
+  if (!backFromLunchTimeDate.isValid) throw new BusinessException('Horário da volta do almoço inválida')
+  if (!exitTimeDate.isValid) throw new BusinessException('Horário de saída inválida')
+}
+
+const validateAndGetTime = timeAsString => {
+  const date = DateTime.fromISO(timeAsString)
+  if (!date.isValid) throw new BusinessException('Horário de informado inválida')
+
+  return timeAsString
+}
+
+export { getAllDayFromAMonthInAYear, getTotalTimeFromDay, getStringMonth, getStringYear, validateAndGetTime }

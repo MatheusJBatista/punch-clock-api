@@ -1,6 +1,6 @@
 import BusinessException from '../helper/business-exception'
 import Time from '../model/time'
-import { getAllDayFromAMonthInAYear, getStringMonth, getStringYear, getTotalTimeFromDay } from '../helper/date-helper'
+import { getAllDayFromAMonthInAYear, getStringMonth, getStringYear, getTotalTimeFromDay, validateAndGetTime } from '../helper/date-helper'
 import { DateTime } from 'luxon'
 
 const createMonth = async (payload, user) => {
@@ -34,13 +34,13 @@ const patchPunchClock = async (id, payload, user) => {
   const { enterTime, leaveToLunchTime, backFromLunchTime, exitTime, dayOff } = payload
   const time = await getTimeAndValidate(id, user.id)
 
-  if (enterTime) time.enterTime = enterTime
-  if (leaveToLunchTime) time.leaveToLunchTime = leaveToLunchTime
-  if (backFromLunchTime) time.backFromLunchTime = backFromLunchTime
-  if (exitTime) time.exitTime = exitTime
+  if (enterTime) time.enterTime = validateAndGetTime(enterTime)
+  if (leaveToLunchTime) time.leaveToLunchTime = validateAndGetTime(leaveToLunchTime)
+  if (backFromLunchTime) time.backFromLunchTime = validateAndGetTime(backFromLunchTime)
+  if (exitTime) time.exitTime = validateAndGetTime(exitTime)
   if (typeof dayOff === 'boolean') time.dayOff = dayOff
 
-  if ((time.enterTime, time.leaveToLunchTime, time.backFromLunchTime, time.exitTime))
+  if (time.enterTime && time.leaveToLunchTime && time.backFromLunchTime && time.exitTime)
     time.totalHour = getTotalTimeFromDay(time.enterTime, time.leaveToLunchTime, time.backFromLunchTime, time.exitTime)
 
   await time.save()
