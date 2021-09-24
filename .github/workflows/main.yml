@@ -59,3 +59,29 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
+
+  post-app:
+    name: deploy post-app
+    runs-on: ubuntu-latest
+    environment:
+        name: POST-APP
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: yarn install
+        run: yarn install
+
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["src/environment/production-config.js"]'
+          tokenPrefix: '__{'
+          tokenSuffix: '}__'
+        env:
+          mongoConnection: ${{ secrets.MONGO_URL }}
+          mongoDatabase: ${{ secrets.MONGO_DATABASE }}
+
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
